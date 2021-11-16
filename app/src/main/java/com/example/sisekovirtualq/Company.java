@@ -120,6 +120,12 @@ public class Company extends AppCompatActivity {
                             companyaddress.setText("");
                             companydescription.setText("");
                         }
+
+
+                        //siseko
+
+
+
                     }
                     else{
                         Toast.makeText(getApplicationContext(), "this code already exist", Toast.LENGTH_SHORT).show();
