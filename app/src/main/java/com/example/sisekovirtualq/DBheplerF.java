@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+
 public class DBheplerF extends SQLiteOpenHelper {
     public static final String DBNAME="company.db";
     //public DBHelper(@Nullable Context context) {
@@ -16,6 +18,7 @@ public class DBheplerF extends SQLiteOpenHelper {
 
     public DBheplerF(@Nullable Context context) {
         super(context, "company.db",null, 1);
+
     }
 
 
@@ -65,12 +68,29 @@ public class DBheplerF extends SQLiteOpenHelper {
 
     public boolean updateCompany(String companyCode, String companyName,String Owner,String address, String description){
         SQLiteDatabase myDB=this.getWritableDatabase();
+
         ContentValues contentValues=new ContentValues();
-        contentValues.put("companycode",companyCode);
-        contentValues.put("companyname",companyName);
-        contentValues.put("Owner",Owner);
-        contentValues.put("companyAddress",address);
-        contentValues.put("Description",description);
+        if(!companyCode.equals("")){
+            contentValues.put("companycode",companyCode);
+
+        }
+
+        if(!companyName.equals("")){
+            contentValues.put("companyname",companyName);
+
+        }
+        if(!Owner.equals("")){
+            contentValues.put("Owner",Owner);
+
+        }
+        if(!address.equals("")){
+            contentValues.put("companyAddress",address);
+
+        }
+        if(!description.equals("")){
+            contentValues.put("Description",description);
+        }
+
         long result=myDB.update("company",contentValues,"companycode = ?",new String[]{companyCode});
         if(result==-1){
             return false;
@@ -80,6 +100,39 @@ public class DBheplerF extends SQLiteOpenHelper {
         }
 
 
+    }
+
+  public ArrayList<String>getAllCompany(){
+        ArrayList<String>list=new ArrayList<String>();
+        SQLiteDatabase myDB = this.getWritableDatabase();
+        Cursor cursor = myDB.rawQuery("select * from company", null);
+       if(cursor.getCount()>0){
+            while(cursor.moveToNext()){
+                int index= cursor.getColumnIndex("companyname");
+                String companyName=cursor.getString(index);
+                list.add(companyName);
+            }
+
+       }
+
+        return list;
+  }
+
+
+    public ArrayList<String>getAllCompanyCode(){
+        ArrayList<String>list=new ArrayList<String>();
+        SQLiteDatabase myDB = this.getWritableDatabase();
+        Cursor cursor = myDB.rawQuery("select * from company", null);
+        if(cursor.getCount()>0){
+            while(cursor.moveToNext()){
+                int index= cursor.getColumnIndex("companycode");
+                String companyName=cursor.getString(index);
+                list.add(companyName);
+            }
+
+        }
+
+        return list;
     }
 
 
@@ -127,6 +180,13 @@ public class DBheplerF extends SQLiteOpenHelper {
         return cursor;
 
     }
+    public Cursor getadressdata (String companyname){
+        SQLiteDatabase myDB = this.getWritableDatabase();
+        Cursor cursor = myDB.rawQuery("select * from company where companyname=?",new String[]{companyname});// select the raws just like datatable
+        return cursor;
+
+    }
+
 
    /* public boolean checkusernamepassword(String username,String password){
         SQLiteDatabase myDB=this.getWritableDatabase();

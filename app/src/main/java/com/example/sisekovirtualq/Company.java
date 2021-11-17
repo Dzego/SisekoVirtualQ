@@ -15,6 +15,8 @@ public class Company extends AppCompatActivity {
     EditText companyCode ,companyname,companyaddress,companydescription,companyowner;
     Button delete,update,view,insert;
     DBheplerF myDB;
+    QueueF Q;
+    private  QueueF queueF;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,22 +30,31 @@ public class Company extends AppCompatActivity {
         update=findViewById(R.id.update_btn);
         view=findViewById(R.id.view_btn);
         insert=findViewById(R.id.insert_btn);
-
-
         myDB=new DBheplerF(this);
+
+        Q=new QueueF();
+
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String nameTXT = (String) companyCode.getText().toString();
-                boolean checkdeletedata = myDB.deletedata(nameTXT);
-                if(checkdeletedata == true) {
+                if(!nameTXT.equals("")){
+                    boolean checkdeletedata = myDB.deletedata(nameTXT);
+                    if(checkdeletedata == true) {
 
-                    Toast.makeText(getApplicationContext(), "Entry deleted ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Entry deleted ", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "Entry not deleted ", Toast.LENGTH_SHORT).show();
+
+                    }
                 }
-                else {
-                    Toast.makeText(getApplicationContext(), "Entry not deleted ", Toast.LENGTH_SHORT).show();
+                else{
+                    Toast.makeText(getApplicationContext(), "fill in the company code ", Toast.LENGTH_SHORT).show();
 
                 }
+
+
             }
         });
 
@@ -57,10 +68,10 @@ public class Company extends AppCompatActivity {
                 StringBuffer buffer=new StringBuffer();
                 while(res.moveToNext()) {//moveToFirst(): Moves the position to the first row. boolean Cursor. ... moveToNext(): Moves the cursor to the next row relative to the current position. boolean Cursor.
                     buffer.append("Company Code :"+res.getString(0)+"\n");
-                    buffer.append("Company Name:"+res.getString(2)+"\n");
-                    buffer.append("Company Owner:"+res.getString(1)+"\n");
-                    buffer.append("Company Address:"+res.getString(1)+"\n");
-                    buffer.append("Company Description:"+res.getString(1)+"\n");
+                    buffer.append("Company Name:"+res.getString(1)+"\n");
+                    buffer.append("Company Owner:"+res.getString(2)+"\n");
+                    buffer.append("Company Address:"+res.getString(3)+"\n");
+                    buffer.append("Company Description:"+res.getString(4)+"\n");
                 }
                 AlertDialog.Builder builder=new AlertDialog.Builder(Company.this);////view box
                 builder.setCancelable(true);
@@ -78,15 +89,23 @@ public class Company extends AppCompatActivity {
                 String fcompanyownerTXT = (String)companyowner.getText().toString();
                 String companyaddressTXT = (String)companyaddress.getText().toString();
                 String companydescriptionTXT = (String)companydescription.getText().toString();
-                boolean checkupdatedata = myDB.updateCompany(nameTXT,companynameTXT, fcompanyownerTXT,companyaddressTXT,companydescriptionTXT);
-                if(checkupdatedata == true) {
+                if(!nameTXT.equals("")){
+                    boolean checkupdatedata = myDB.updateCompany(nameTXT,companynameTXT, fcompanyownerTXT,companyaddressTXT,companydescriptionTXT);
+                    if(checkupdatedata == true) {
 
-                    Toast.makeText(getApplicationContext(), "Entry Updated ", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Toast.makeText(getApplicationContext(), "Entry not Updated ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Entry Updated ", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "Entry not Updated ", Toast.LENGTH_SHORT).show();
+
+                    }
+
+
+                }else{
+                    Toast.makeText(getApplicationContext(), "fill in user name ", Toast.LENGTH_SHORT).show();
 
                 }
+
             }
 
         });
@@ -106,7 +125,7 @@ public class Company extends AppCompatActivity {
                 }
                 else {
                     boolean checkucode=myDB.checkcompanycode(nameTXT);
-                    if(checkucode){
+                    if(checkucode==false){
                         boolean insert=myDB.insertData(nameTXT,companynameTXT,companyownerTXT,companyaddressTXT,companydescriptionTXT);
                         if(insert==true){
 
@@ -121,8 +140,6 @@ public class Company extends AppCompatActivity {
                             companydescription.setText("");
                         }
 
-
-                        //siseko
 
 
 
@@ -140,6 +157,10 @@ public class Company extends AppCompatActivity {
         });
 
 
+    }
+
+    public QueueF getcompanyQ(){
+        return Q;
     }
 
 
